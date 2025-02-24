@@ -6,7 +6,7 @@ const imageRoutes = require('./routes/imageRoutes');
 // const bookRoutes = require("./routes/bookRoutes");
 
 // Initialize Express app
-const app = express(); 
+const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -16,6 +16,7 @@ app.use("/uploads", express.static("uploads")); // Ensure uploaded files are acc
 const booksRoutes = require("./routes/books");
 app.use("/books", booksRoutes);
 const authRoutes = require('./routes/authRoutes');
+const Book = require('./models/Book');
 // app.use("/api/books", bookRoutes);
 // app.use("/books", bookRoutes);
 
@@ -32,6 +33,15 @@ app.use('/api/auth', authRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/', imageRoutes);
 
+app.get('/v2/allbooks', async (req, res) => {
+  try {
+    const allBooks = await Book.find()
+    res.status(200).json(allBooks)
+  } catch (error) {
+    res.status(500).json({ message: 'No books found' })
+  }
+
+})
 
 // Start the server
 const PORT = process.env.PORT || 7000;
@@ -49,4 +59,3 @@ app.listen(PORT, () => {
 //   .catch((err) => {
 //     console.log('Error connecting to MongoDB', err);
 //   });
-  
